@@ -1,6 +1,7 @@
 package net.milanvit.recipeapp.controller;
 
 import net.milanvit.recipeapp.command.IngredientCommand;
+import net.milanvit.recipeapp.command.UnitOfMeasureCommand;
 import net.milanvit.recipeapp.service.IngredientService;
 import net.milanvit.recipeapp.service.RecipeService;
 import net.milanvit.recipeapp.service.UnitOfMeasureService;
@@ -36,6 +37,18 @@ public class IngredientController {
         model.addAttribute("ingredient", ingredientService.findCommandByReceiptIdAndIngredientId(recipeId, id));
 
         return "recipe/ingredient/show";
+    }
+
+    @GetMapping("/recipe/{recipeId}/ingredient/new")
+    public String newIngredient(@PathVariable Long recipeId, Model model) {
+        IngredientCommand ingredientCommand = new IngredientCommand();
+
+        ingredientCommand.setRecipeId(recipeId);
+        ingredientCommand.setUom(new UnitOfMeasureCommand());
+        model.addAttribute("ingredient", ingredientCommand);
+        model.addAttribute("uoms", unitOfMeasureService.findAll());
+
+        return "recipe/ingredient/ingredient-form";
     }
 
     @GetMapping("/recipe/{recipeId}/ingredient/{id}/update")
