@@ -1,22 +1,31 @@
 package net.milanvit.recipeapp.service;
 
 import net.milanvit.recipeapp.command.IngredientCommand;
+import net.milanvit.recipeapp.converter.IngredientCommandToIngredient;
 import net.milanvit.recipeapp.converter.IngredientToIngredientCommand;
+import net.milanvit.recipeapp.domain.Ingredient;
 import net.milanvit.recipeapp.domain.Recipe;
 import net.milanvit.recipeapp.repository.RecipeRepository;
+import net.milanvit.recipeapp.repository.UnitOfMeasureRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
 public class IngredientServiceImpl implements IngredientService {
-    private final RecipeRepository recipeRepository;
     private final IngredientToIngredientCommand ingredientToIngredientCommand;
+    private final IngredientCommandToIngredient ingredientCommandToIngredient;
+    private final RecipeRepository recipeRepository;
+    private final UnitOfMeasureRepository unitOfMeasureRepository;
 
-    public IngredientServiceImpl(RecipeRepository recipeRepository,
-                                 IngredientToIngredientCommand ingredientToIngredientCommand) {
-        this.recipeRepository = recipeRepository;
+    public IngredientServiceImpl(IngredientToIngredientCommand ingredientToIngredientCommand,
+                                 IngredientCommandToIngredient ingredientCommandToIngredient,
+                                 RecipeRepository recipeRepository, UnitOfMeasureRepository unitOfMeasureRepository) {
         this.ingredientToIngredientCommand = ingredientToIngredientCommand;
+        this.ingredientCommandToIngredient = ingredientCommandToIngredient;
+        this.recipeRepository = recipeRepository;
+        this.unitOfMeasureRepository = unitOfMeasureRepository;
     }
 
     @Override
@@ -35,5 +44,39 @@ public class IngredientServiceImpl implements IngredientService {
             .findFirst();
 
         return ingredientCommandOptional.orElse(null);
+    }
+
+    @Override
+    @Transactional
+    public IngredientCommand saveIngredientCommand(IngredientCommand command) {
+        Optional<Recipe> recipeOptional = recipeRepository.findById(command.getRecipeId());
+
+        if (!recipeOptional.isPresent()) {
+            return new IngredientCommand();
+        }
+
+        Recipe recipe = recipeOptional.get();
+        Optional<Ingredient> ingredientOptional = recipe.getIngredients()
+            .stream()
+            .filter(ingredient -> ingredient.getId().equals(command.getId()))
+            .findFirst();
+
+        if (ingredientOptional.isPresent()) {
+            Ingredient foundIngredient = ingredientOptional.get();
+
+            foundIngredient.setDescription(command.getDescription());
+            foundIngredient.setAmount(command.getAmount());
+            foundIngredient.setUom(unitOfMeasureRepository.findById(command.getUom().getId())
+                .orElseThrow(() -> new RuntimeException("UOM not found")));
+        } else {
+            recipe.addIngredient(ingredientCommandToIngredient.convert(command));
+        }
+
+        Recipe savedRecipe = recipeRepository.save(recipe);
+
+        return ingredientToIngredientCommand.convert(savedRecipe.getIngredients().stream()
+            .filter(recipeIngredients -> recipeIngredients.getId().equals(command.getId()))
+            .findFirst()
+            .get());
     }
 }
