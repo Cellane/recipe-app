@@ -5,6 +5,7 @@ import net.milanvit.recipeapp.command.RecipeCommand;
 import net.milanvit.recipeapp.converter.RecipeCommandToRecipe;
 import net.milanvit.recipeapp.converter.RecipeToRecipeCommand;
 import net.milanvit.recipeapp.domain.Recipe;
+import net.milanvit.recipeapp.exception.NotFoundException;
 import net.milanvit.recipeapp.repository.RecipeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +42,7 @@ public class RecipeServiceImpl implements RecipeService {
         log.debug("Finding recipe with ID: " + id);
 
         return recipeRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Recipe not found"));
+            .orElseThrow(() -> new NotFoundException("Recipe not found for ID " + id));
     }
 
     @Override

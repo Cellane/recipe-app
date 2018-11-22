@@ -2,6 +2,7 @@ package net.milanvit.recipeapp.controller;
 
 import net.milanvit.recipeapp.command.RecipeCommand;
 import net.milanvit.recipeapp.domain.Recipe;
+import net.milanvit.recipeapp.exception.NotFoundException;
 import net.milanvit.recipeapp.service.RecipeService;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +31,9 @@ public class RecipeControllerTest {
         MockitoAnnotations.initMocks(this);
 
         controller = new RecipeController(recipeService);
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+            .setControllerAdvice(ControllerExceptionHandler.class)
+            .build();
     }
 
     @Test
@@ -43,6 +46,22 @@ public class RecipeControllerTest {
             .andExpect(status().isOk())
             .andExpect(view().name("recipe/show"))
             .andExpect(model().attributeExists("recipe"));
+    }
+
+    @Test
+    public void getRecipeNotFound() throws Exception {
+        when(recipeService.findById(anyLong())).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(get("/recipe/1/show"))
+            .andExpect(status().isNotFound())
+            .andExpect(view().name("404"));
+    }
+
+    @Test
+    public void getRecipeNumberFormat() throws Exception {
+        mockMvc.perform(get("/recipe/test/show"))
+            .andExpect(status().isBadRequest())
+            .andExpect(view().name("400"));
     }
 
     @Test

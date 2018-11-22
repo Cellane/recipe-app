@@ -3,6 +3,7 @@ package net.milanvit.recipeapp.service;
 import net.milanvit.recipeapp.converter.RecipeCommandToRecipe;
 import net.milanvit.recipeapp.converter.RecipeToRecipeCommand;
 import net.milanvit.recipeapp.domain.Recipe;
+import net.milanvit.recipeapp.exception.NotFoundException;
 import net.milanvit.recipeapp.repository.RecipeRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,6 +50,15 @@ public class RecipeServiceImplTest {
         assertNotNull(recipeReturned);
         verify(recipeRepository).findById(anyLong());
         verify(recipeRepository, never()).findAll();
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void getRecipeByIdNotFound() {
+        Optional<Recipe> recipeOptional = Optional.empty();
+
+        when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
+
+        recipeService.findCommandById(1L);
     }
 
     @Test
