@@ -57,7 +57,7 @@ public class ImageControllerTest {
     @Test
     public void handleImage() throws Exception {
         MockMultipartFile multipartFile =
-            new MockMultipartFile("imagefile", "test.txt", "text/plain", "Spring Framework".getBytes());
+            new MockMultipartFile("imageFile", "test.txt", "text/plain", "Spring Framework".getBytes());
 
         mockMvc.perform(multipart("/recipe/1/image").file(multipartFile))
             .andExpect(status().is3xxRedirection())
