@@ -44,4 +44,3 @@ jobs:
           path: target/surefire-reports
 
       - run: bash <(curl -s https://codecov.io/bash)
-
