@@ -27,6 +27,8 @@ public class UnitOfMeasureRepositoryIT {
 
     @Before
     public void setUp() throws Exception {
+        unitOfMeasureRepository.deleteAll();
+
         RecipeBootstrap recipeBootstrap =
             new RecipeBootstrap(categoryRepository, recipeRepository, unitOfMeasureRepository);
 
