@@ -7,6 +7,8 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class RecipeCommandToRecipe implements Converter<RecipeCommand, Recipe> {
     private final CategoryCommandToCategory categoryConverter;
@@ -32,7 +34,8 @@ public class RecipeCommandToRecipe implements Converter<RecipeCommand, Recipe> {
 
         final Recipe destination = new Recipe();
 
-        destination.setId(source.getId());
+        destination.setId(
+            (source.getId() != null && !source.getId().isEmpty()) ? source.getId() : UUID.randomUUID().toString());
         destination.setCookTime(source.getCookTime());
         destination.setPrepTime(source.getPrepTime());
         destination.setDescription(source.getDescription());

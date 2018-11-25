@@ -5,6 +5,7 @@ import net.milanvit.recipeapp.converter.RecipeCommandToRecipe;
 import net.milanvit.recipeapp.converter.RecipeToRecipeCommand;
 import net.milanvit.recipeapp.domain.Recipe;
 import net.milanvit.recipeapp.repository.RecipeRepository;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Ignore
 public class RecipeServiceIT {
     private static final String NEW_DESCRIPTION = "New Description";
 

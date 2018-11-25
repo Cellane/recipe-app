@@ -12,6 +12,8 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="recipe-app" target="1.8" />
+      <module name="recipe-app.main" target="1.8" />
+      <module name="recipe-app.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

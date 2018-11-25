@@ -52,7 +52,7 @@ public class IndexControllerTest {
         Set<Recipe> recipes = new HashSet<>();
         Recipe recipe = new Recipe();
 
-        recipe.setId(1L);
+        recipe.setId("1");
         recipes.add(new Recipe());
         recipes.add(recipe);
 

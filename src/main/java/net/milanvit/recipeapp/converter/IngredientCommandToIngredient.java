@@ -7,6 +7,8 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class IngredientCommandToIngredient implements Converter<IngredientCommand, Ingredient> {
     private final UnitOfMeasureCommandToUnitOfMeasure uomConverter;
@@ -25,7 +27,8 @@ public class IngredientCommandToIngredient implements Converter<IngredientComman
 
         final Ingredient destination = new Ingredient();
 
-        destination.setId(source.getId());
+        destination.setId(
+            (source.getId() != null && !source.getId().isEmpty()) ? source.getId() : UUID.randomUUID().toString());
         destination.setAmount(source.getAmount());
         destination.setDescription(source.getDescription());
         destination.setUom(uomConverter.convert(source.getUom()));

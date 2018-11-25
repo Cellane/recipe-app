@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -43,15 +43,15 @@ public class ImageControllerTest {
     public void getImageForm() throws Exception {
         RecipeCommand command = new RecipeCommand();
 
-        command.setId(1L);
+        command.setId("1");
 
-        when(recipeService.findCommandById(anyLong())).thenReturn(command);
+        when(recipeService.findCommandById(anyString())).thenReturn(command);
 
         mockMvc.perform(get("/recipe/1/image"))
             .andExpect(status().isOk())
             .andExpect(model().attributeExists("recipe"));
 
-        verify(recipeService).findCommandById(anyLong());
+        verify(recipeService).findCommandById(anyString());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class ImageControllerTest {
         mockMvc.perform(multipart("/recipe/1/image").file(multipartFile))
             .andExpect(status().is3xxRedirection())
             .andExpect(header().string("Location", "/recipe/1/show"));
-        verify(imageService).saveImageFile(anyLong(), any());
+        verify(imageService).saveImageFile(anyString(), any());
     }
 
     @Test
@@ -76,10 +76,10 @@ public class ImageControllerTest {
             bytes[i++] = primitiveByte;
         }
 
-        command.setId(1L);
+        command.setId("1");
         command.setImage(bytes);
 
-        when(recipeService.findCommandById(anyLong())).thenReturn(command);
+        when(recipeService.findCommandById(anyString())).thenReturn(command);
 
         MockHttpServletResponse response = mockMvc.perform(get("/recipe/1/recipe-image"))
             .andExpect(status().isOk())

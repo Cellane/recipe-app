@@ -42,13 +42,13 @@ public class RecipeServiceImplTest {
     public void getRecipeById() {
         Recipe recipe = new Recipe();
 
-        recipe.setId(1L);
-        when(recipeRepository.findById(anyLong())).thenReturn(Optional.of(recipe));
+        recipe.setId("1");
+        when(recipeRepository.findById(anyString())).thenReturn(Optional.of(recipe));
 
-        Recipe recipeReturned = recipeService.findById(1L);
+        Recipe recipeReturned = recipeService.findById("1");
 
         assertNotNull(recipeReturned);
-        verify(recipeRepository).findById(anyLong());
+        verify(recipeRepository).findById(anyString());
         verify(recipeRepository, never()).findAll();
     }
 
@@ -56,9 +56,9 @@ public class RecipeServiceImplTest {
     public void getRecipeByIdNotFound() {
         Optional<Recipe> recipeOptional = Optional.empty();
 
-        when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
+        when(recipeRepository.findById(anyString())).thenReturn(recipeOptional);
 
-        recipeService.findCommandById(1L);
+        recipeService.findCommandById("1");
     }
 
     @Test
@@ -77,10 +77,8 @@ public class RecipeServiceImplTest {
 
     @Test
     public void deleteById() {
-        Long idToDelete = 2L;
+        recipeService.deleteById("2");
 
-        recipeService.deleteById(idToDelete);
-
-        verify(recipeRepository).deleteById(anyLong());
+        verify(recipeRepository).deleteById(anyString());
     }
 }
